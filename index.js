@@ -1,4 +1,5 @@
 const obj = {};
+obj.names = ['falls', 'my-transition', 'num-list'];
 
 function setComponent(Vue, names){
     names.forEach( name=>{
@@ -9,8 +10,7 @@ function setComponent(Vue, names){
 }
 
 obj.install = function(Vue, options){
-    const names = ['falls'];
-    setComponent(Vue, names);
+    setComponent(Vue, obj.names);
 }
 
 export default obj;
