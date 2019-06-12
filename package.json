@@ -1,11 +1,14 @@
 {
   "name": "yu-vue",
-  "version": "1.0.3",
+  "version": "1.1.5",
   "description": "vue组件",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "邓小宇",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "yu-util": "^1.0.8"
+  }
 }

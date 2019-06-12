@@ -1,10 +1,10 @@
 <template>
-    <div id="num-list">
-        <my-transition>
+    <div class="num-list">
+        <yu-my-transition>
             <div v-for="(val,i) in arr" :key="val" class="list border table" @mouseover="remove(i)">
                 <span class="table-cell text-center">{{val|newVal}}</span>
             </div>
-        </my-transition>
+        </yu-my-transition>
         <button class="btn" @click="add">添加</button>
         <button class="btn" @click="sort">打乱顺序</button>
         <button class="btn" @click="empty">清空</button>
@@ -21,7 +21,7 @@ function fn(){
 }
 
     export default {
-        name:'num-list',
+        name:'numList',
         data(){
             return {
                 arr:fn(),

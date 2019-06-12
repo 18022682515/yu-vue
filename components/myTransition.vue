@@ -1,5 +1,5 @@
 <template>
-    <transition-group tag="div" id="myTransition" class="flex-row">
+    <transition-group tag="div" class="myTransition flex-row">
         <slot></slot>
     </transition-group>
 </template>
@@ -12,9 +12,8 @@
 </script>
 
 <style lang="less" scoped>
-    #myTransition{
+    .myTransition{
         position:relative;
-        width:20rem;   
     }
 
 </style>

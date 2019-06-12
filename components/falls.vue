@@ -1,5 +1,5 @@
 <template>
-    <div id='falls'>
+    <div class='falls'>
         <div 
             ref="box" 
             class="box" 
@@ -17,6 +17,7 @@
 import Vue from 'vue';
 
     export default {
+        name:'falls',
         props: {
             imgs: {
                 type: Array,
@@ -76,7 +77,7 @@ import Vue from 'vue';
 </script>
 
 <style scoped>
-    #falls{
+    .falls{
         position:relative;
     }
     .box{
