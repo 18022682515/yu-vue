@@ -1,11 +1,52 @@
-const { getType } = require('yu-util');
+
 const obj = {};
-obj.names = ['falls', 'myTransition', 'numList', 'slide'];
+obj.names = [
+    'falls', 
+    'myTransition', 
+    'numList', 
+    'select',
+    'scale',
+    'fold',
+    'pageCode',
+    'table',
+    'scrollBox',
+    'hint',
+    'screen',
+    'user/signin',
+    'user/login',
+    'calendar/calendar',
+    'calendar/slideCalendar',
+    'svg/svg',
+    'svg/path',
+    'progress/progress',
+    'progress/circle',
+    'alert/alert',
+    'alert/confirm',
+    'slide/slide',
+    'slide/slideX',
+    'slide/slideY',
+    'slide/slideOpacity',
+    'sidebar/top',
+    'sidebar/right',
+    'sidebar/bottom',
+    'sidebar/left',
+    'nav/nav',
+    'nav/navItem',
+    'input/button',
+    'input/input',
+    'input/radio',
+    'input/checkbox',
+    'tabs/tabs',
+    'tabs/tabsItem',
+    'tabs/textTabs',
+];
 
 
 function setComponent(Vue, names){
     names.forEach( name=>{
-        let component = 'yu'+name.replace(name[0],name[0].toLocaleUpperCase());
+        let arr = name.split('/');
+        let filename = arr[arr.length-1];
+        let component = 'yu'+filename.replace(filename[0],filename[0].toLocaleUpperCase());
         Vue.component( component, resolve=>{
             require(['./components/'+name+'.vue'], resolve);
         } );
@@ -24,6 +65,8 @@ obj.install = function(Vue, options){
         let resArr = selector.match(/^(\.|\#)|\w+/g);
         resArr[0] === '#' && (vm.$el.id = resArr[1]);
         resArr[0] === '.' && (vm.$el.className += ' '+resArr[1]);
+
+        return vm;
     };
 }
 

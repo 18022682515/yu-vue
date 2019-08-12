@@ -10,7 +10,7 @@
             <span @click="down">→</span>
         </div>
         <ul class="dot">
-            <li :style="{padding:imgWidth/50+'px'}" v-for="(v,i) in imgs.length" :class="{active:i+1==offsetIndex}" @mousemove="over(i+1)">
+            <li :style="{padding:imgWidth/50+'px'}" v-for="(v,i) in imgs.length" :class="{active:i+1==offsetIndex}" @click="over(i+1)">
                 <p :style="{width:imgWidth/50+'px',height:imgWidth/50+'px'}"></p>
             </li>
         </ul>
@@ -27,9 +27,9 @@
             },
             slideWidth:{
                 type: String,
-                default: '100%',
+                default: 'inherit',
             },
-            interval:{
+            ms:{
                 type: Number,
                 default: 2500,
             },
@@ -92,7 +92,7 @@
                     this.ani();
                     this.left -= this.imgWidth;
                     this.getIndex();
-                },this.interval);
+                },this.ms);
             },
             stopTimer(){
                 clearInterval(this.timer);
@@ -109,7 +109,9 @@
 <style lang='less' scoped>
 .slide{
     position:relative;
-    margin:0 auto;
+    margin:4px 2px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px #000, 1px 1px 2px #000;
     box-sizing: border-box;
     overflow-x: hidden;
 
@@ -145,16 +147,24 @@
         position: absolute;
         left:50%;
         bottom:0;
+        
         transform: translateX(-50%);
         li{
             float:left;
+            
+            p{
+                // box-shadow: 0 0 1px #000;
+                border:1px solid #CCC;
+                background: #fff;
+                border-radius: 50%;
+                padding:1px;
+                background-clip: content-box;
+            }
         }
-        p{
-            background: #fff;
-            border-radius: 50%;
-        }
+        
         .active>p{
-            background:#f00;
+            background-color:rgb(168, 2, 2);
+            
         }
     }
 }
