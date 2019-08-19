@@ -66,7 +66,7 @@ show:true
 index:0,  //当前显示页面索引(.page1)
 ```
 
-### 手机端：下拉刷新
+### 手机端：下拉刷新、上拉加载
 ```html
 <yu-touch-y @pull-down="downFn" :downCount="downCount" @pull-up="upFn" :upCount="upCount">
     <div class="page1">1</div>
