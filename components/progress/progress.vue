@@ -23,6 +23,11 @@ export default {
             default:'rgb(24, 144, 255)'
         }
     },
+    watch:{
+        percent(n,o){
+            n>=100 && this.$emit('finish');
+        }
+    },
     computed:{
         width(){
             return this.percent>100 ? 100: (this.percent<0 ? 0 : this.percent);

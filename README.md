@@ -54,13 +54,51 @@ Vue.mount('#slide','yu-slide'，{ imgs:[require('图片1')], slideWidth:"300px",
 show:true
 ```
 
+### 手机端：横向滑动切换页面
+```html
+<yu-touch-x v-model="index">
+    <div class="page1">1</div>
+    <div class="page2">2</div>
+    <div class="page3">3</div>
+    <div class="page4">4</div>
+</yu-touch-x>
+
+index:0,  //当前显示页面索引(.page1)
+```
+
+### 手机端：下拉刷新
+```html
+<yu-touch-y @pull-down="downFn" :downCount="downCount" @pull-up="upFn" :upCount="upCount">
+    <div class="page1">1</div>
+    <div class="page2">2</div>
+    <div class="page3">3</div>
+    <div class="page4">4</div>
+</yu-touch-y>
+
+@pull-down  //当用户下拉刷新时，触发事件
+downCount:0,   //用来触发子组件的函数，可以设置为任意不同的数字
+downFn(e){
+    ajax('/api').then(res=>{
+        this.downCount++;   //当后台响应回请求时，设置downCount为任意不同的数字，即会触发子组件的函数。
+    });
+},
+
+@pull-up    //当用户上拉加载时，触发事件
+upCount:0,   //用来触发子组件的函数，可以设置为任意不同的数字
+upFn(e){
+    ajax('/api').then(res=>{
+        this.upCount++;   //当后台响应回请求时，设置upCount为任意不同的数字，即会触发子组件的函数。
+    });
+}
+```
+
 ### 屏上下切换组件
 ```html
-<yu-screen v-model="index" height="100%" :ms="2000">
+<yu-screen-y v-model="index" height="100%" :ms="2000">
     <div class="screen-1">screen-1</div>
     <div class="screen-2">screen-2</div>
     <div class="screen-3">screen-3</div>
-</yu-screen>
+</yu-screen-y>
 
 index:1,  //当前显示的屏索引，显示.screen-1
 height:'100%|*px',   //屏高度
@@ -215,13 +253,14 @@ active:true|false,  //表示是否关闭折叠功能
 ### 进度条组件
 ```html
 //条状进度条
-<yu-progress :percent="percent" color="#0f0"></yu-progress>
+<yu-progress :percent="percent" color="#0f0" @finish="finish"></yu-progress>
 
 //圆形进度条
-<yu-circle :percent="percent" color="#0f0"></yu-circle>
+<yu-circle :percent="percent" color="#0f0" @finish="finish"></yu-circle>
 
 percent:100,  //当前进度（百分比）
 color:'#00f',   //进度条颜色
+finish(){}  //进度条达到100时，触发函数
 ```
 
 ### 页码组件

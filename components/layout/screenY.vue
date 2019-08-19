@@ -1,5 +1,5 @@
 <template>
-<div class="screen" @mouseenter="close" @mouseleave="run" @mousewheel="wheel" :style="{ height }">
+<div class="screenY" @mouseenter="close" @mouseleave="run" @mousewheel="wheel" :style="{ height }">
     <div ref="box" class="box" :style="{ boxHeight }">
         <slot></slot>
     </div>
@@ -13,7 +13,7 @@
 import { animate } from 'yu-front'; 
 
 export default {
-    name:"screen",
+    name:"screenY",
     props:{
         value:{
             type:Number,
@@ -146,7 +146,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.screen{
+.screenY{
     position:relative;
     box-shadow: 0 0 1px #000;
     height:100px;

@@ -1,8 +1,9 @@
 <template>
 <div class="circle">
-    <svg xmlns="http://www.w3.org/200/svg" height="120" width="120">
+    <svg xmlns="http://www.w3.org/200/svg" height="100%" width="100%" viewBox="0,0,120,120 ">
 
-        <circle cx="60" cy="60" r="50" fill="none" stroke="#EEE" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#FFF" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#F00" stroke-width="1" stroke-linecap="round"/>
 
         <circle ref="circle" cx="60" cy="60" r="50" fill="none" :stroke="color" stroke-width="10" stroke-linecap="round" :style="{ strokeDashoffset:offset,strokeDasharray:`${length} ${length}` }"/>
 
@@ -25,6 +26,11 @@ export default {
         percent:{
             type:Number,
             default:50
+        }
+    },
+    watch:{
+        percent(n,o){
+            n>=100 && this.$emit('finish');
         }
     },
     data(){
