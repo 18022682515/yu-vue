@@ -28,7 +28,6 @@ export default {
             bool:false,
             offsetWidth:0,
             meanVal:0,
-            run:false,
             count:0
         }
     },
@@ -52,7 +51,6 @@ export default {
     },
     methods:{
         cancel(){
-            this.run = true;
             document.body.removeEventListener('touchmove',this.move);
         },
         move(e){
@@ -76,7 +74,6 @@ export default {
         start(e){
             this.bool = true;
             clearTimeout(this.timer);
-            this.run = false;
             this.count = 0;
             this.speeds.splice(0);
             this.x = e.changedTouches[0].clientX;

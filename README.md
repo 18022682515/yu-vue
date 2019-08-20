@@ -66,14 +66,26 @@ show:true
 index:0,  //当前显示页面索引(.page1)
 ```
 
-### 手机端：下拉刷新、上拉加载
+### 手机端：纵向滑动切换页面
 ```html
-<yu-touch-y @pull-down="downFn" :downCount="downCount" @pull-up="upFn" :upCount="upCount">
+<yu-touch-y v-model="index">
     <div class="page1">1</div>
     <div class="page2">2</div>
     <div class="page3">3</div>
     <div class="page4">4</div>
 </yu-touch-y>
+
+index:0,  //当前显示页面索引(.page1)
+```
+
+### 手机端：下拉刷新、上拉加载
+```html
+<yu-pull @pull-down="downFn" :downCount="downCount" @pull-up="upFn" :upCount="upCount">
+    <div class="page1">1</div>
+    <div class="page2">2</div>
+    <div class="page3">3</div>
+    <div class="page4">4</div>
+</yu-pull>
 
 @pull-down  //当用户下拉刷新时，触发事件
 downCount:0,   //用来触发子组件的函数，可以设置为任意不同的数字
