@@ -199,7 +199,9 @@ date:'2019/7/12'
 
 ### 图片盒子
 ```html
-<yu-img :img="img" height="300px"></yu-img>
+<yu-img :img="img" height="300px">
+    <div>图片描述</div>
+</yu-img>
 
 img:require('./img/1.jpg'),
 height 设置图片高度
