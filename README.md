@@ -29,15 +29,16 @@ Vue.mount('#slide','yu-slide'，{ imgs:[require('图片1')], slideWidth:"300px",
 
 ### 导航栏组件
 ```html
-<yu-nav>
-    <yu-nav-item text="菜单1"></yu-nav-item>
-    <yu-nav-item text="菜单2">
-        <yu-down-item>下拉选项1</yu-down-item>
-        <yu-down-item>下拉选项2</yu-down-item>
-        <yu-down-item>下拉选项3</yu-down-item>
-    </yu-nav-item>
-    <yu-nav-item text="菜单3"></yu-nav-item>
-</yu-nav>
+<yu-nav :options="options"></yu-nav>
+
+options:[ 
+    { title:"首页" },
+    { title:"a页", menu:[1,2,3,4] },
+    { title:"b页", menu:[1,2,3,4] },
+    { title:"c页", menu:[1,2,3,4] },
+]
+//title是每项导航的标题,
+//menu是每项导航的下拉菜单
 ```
 
 ### 侧边栏组件
@@ -196,12 +197,31 @@ loginUrl:服务器端地址,    //验证用户名和密码是否正确
 date:'2019/7/12'
 ```
 
+### 图片盒子
+```html
+<yu-img :img="img" height="300px"></yu-img>
+
+img:require('./img/1.jpg'),
+height 设置图片高度
+```
+
 ### 图片放大镜组件
 ```html
 <yu-scale :img="img" :url="url"></yu-scale>
 
 img:require('../img/1.jpg'),  //需要被放大的图片
 url:require('../img/lens.png'),  //放大框的背景图片
+```
+
+### 滑动选中的选项卡
+```html
+<yu-tab :titles="titles">
+    <div class="content" v-for="title in titles">{{title}}</div>
+</yu-tab>
+
+titles:["标题1","标题2","标题3","标题4"],
+//注意：.content元素的数量一定要和titles.length相等
+
 ```
 
 ### 选项卡组件
