@@ -118,6 +118,20 @@ height:'100%|*px',   //屏高度
 ms:2000,   //间隔2000毫秒播放下一屏
 ```
 
+### 立方体轮播图(x轴旋转)
+```html
+<yu-shape-x :imgs="imgs"></yu-shape-x>
+
+imgs:[ require('./img/1.jpg'),require('./img/2.jpg'),require('./img/3.jpg') ]
+```
+
+### 立方体轮播图(y轴旋转)
+```html
+<yu-shape-y :imgs="imgs"></yu-shape-y>
+
+imgs:[ require('./img/1.jpg'),require('./img/2.jpg'),require('./img/3.jpg') ]
+```
+
 ### 轮播图组件
 ```html
 //第一种(无限左右滑动)：

@@ -34,6 +34,8 @@ obj.names = [
     'slide/slideX',
     'slide/slideY',
     'slide/slideOpacity',
+    'slide/shapeX',
+    'slide/shapeY',
     'sidebar/top',
     'sidebar/right',
     'sidebar/bottom',

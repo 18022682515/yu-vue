@@ -1,5 +1,5 @@
 <template>
-<div class="nav">
+<div class="hello">
     <div 
         class="child" 
         v-for="(item,i) in options" 
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-    name:"yuNav",
+    name:"hello",
     props:{
         options:{
             type:Array,
@@ -45,11 +45,11 @@ export default {
     watch:{
         index(n,o){
             if(n>o){
-                this.types[n] = "left";
-                this.types[o] = "right";
+                this.$set(this.types,n,"left");
+                this.$set(this.types,o,"right");
             }else{
-                this.types[n] = "right";
-                this.types[o] = "left";
+                this.$set(this.types,n,"right");
+                this.$set(this.types,o,"left");
             }
         }
     }
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.nav{
+.hello{
     margin-top:50px;
     padding-left:5%;
     display:flex;
@@ -135,7 +135,7 @@ export default {
             }
             .left-enter-active,.left-leave-active,
             .right-enter-active,.right-leave-active{
-                transition:all .5s;
+                transition:all .2s;
             }
         }
     }
