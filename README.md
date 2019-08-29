@@ -120,56 +120,57 @@ ms:2000,   //间隔2000毫秒播放下一屏
 
 ### 立方体轮播图(x轴旋转)
 ```html
-<yu-shape-x :imgs="imgs"></yu-shape-x>
+<yu-shape-x :imgs="imgs" :ms="3000"></yu-shape-x>
 
 imgs:[ require('./img/1.jpg'),require('./img/2.jpg'),require('./img/3.jpg') ]
+ms:3000  //每隔3000毫秒轮播下一张图
 ```
 
 ### 立方体轮播图(y轴旋转)
 ```html
-<yu-shape-y :imgs="imgs"></yu-shape-y>
+<yu-shape-y :imgs="imgs" :ms="3000"></yu-shape-y>
 
 imgs:[ require('./img/1.jpg'),require('./img/2.jpg'),require('./img/3.jpg') ]
+ms:3000  //每隔3000毫秒轮播下一张图
 ```
 
 ### 轮播图
 ```html
-//第一种(无限左右滑动)：
-<yu-slide :imgs="imgs" slideWidth="300px" :ms="ms"></yu-slide>
+//第一种(无限横向轮播)：
+<yu-slide :imgs="imgs" :ms="3000"></yu-slide>
 
 imgs:[ require('图片1'), require('图片2'), require('图片3'), …… ],
-slideWidth是轮播图的宽度,
-ms:2000,  //轮播间隔时间（毫秒）
+ms:3000  //每隔3000毫秒轮播下一张图
 
-//第二种(无限左右滑动，可自定义轮播项)：
-<yu-slide-x :ms="ms">
+//第二种(无限横向轮播，可自定义轮播项)：
+<yu-slide-x :ms="3000">
     <div v-for="img in imgs">
         <img :src="img" alt="" width="100%">
     </div>
 </yu-slide-x>
 
-ms:2000,  //轮播间隔时间（毫秒）
+ms:3000  //每隔3000毫秒轮播下一项
 imgs:[ require('./1.jpg'),require('./2.jpg') ]
 
-//第三种(无限上下滑动，可自定义轮播项)：
-<yu-slide-y :ms="ms" height="300px">
+//第三种(无限纵向轮播，可自定义轮播项)：
+<yu-slide-y :ms="3000" height="300px">
     <div v-for="img in imgs">
         <img :src="img" alt="" width="100%">
     </div>
 </yu-slide-y>
 
-ms:2000,  //轮播间隔时间（毫秒）
+ms:3000  //每隔3000毫秒轮播下一项
 height:'300px',  //轮播项的高度
 imgs:[ require('./1.jpg'),require('./2.jpg') ]
 
-//第四种(透明度切换)：：
-<yu-slide-opacity :ms="ms">
+//第四种(透明度切换轮播)：
+<yu-slide-opacity :ms="3000">
     <div v-for="img in imgs">
         <img :src="img" alt="" width="100%">
     </div>
 </yu-slide-opacity>
 
-ms:2000,  //轮播间隔时间（毫秒）
+ms:3000  //每隔3000毫秒轮播下一张图
 imgs:[ require('./1.jpg'),require('./2.jpg') ]
 ```
 

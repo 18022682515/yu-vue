@@ -1,172 +1,166 @@
 <template>
-    <div class="slide" :style="{ width:slideWidth }" @mouseout="runTimer" @mouseover="stopTimer">
-        <div class="box" :style="{ width:boxWidth+'px', marginLeft:left+'px', transition:transition }">
-            <div class="img-box" v-for="(img,i) in slideImg" :key="i" :style="{ width:imgWidth+'px' }">
-                <img :src="img" alt="" width="100%">
-            </div>
+<div class="slide" @mouseenter="close" @mouseleave="run">
+    <div ref="box" class="box" :style="{ width:100*nimgs.length+'%' }">
+        <div class="img" v-for="img,i in nimgs">
+            <img :src="img" alt="" width="100%">
         </div>
-        <div class="btn-group">
-            <span @click="up">←</span>
-            <span @click="down">→</span>
-        </div>
-        <ul class="dot">
-            <li :style="{padding:imgWidth/50+'px'}" v-for="(v,i) in imgs.length" :class="{active:i+1==offsetIndex}" @click="over(i+1)">
-                <p :style="{width:imgWidth/50+'px',height:imgWidth/50+'px'}"></p>
-            </li>
-        </ul>
     </div>
+    <div class="up-next">
+        <p class="up" @click="up">←</p>
+        <p class="next" @click="next">→</p>
+    </div>
+    <div class="dot">
+        <span v-for="img,i in imgs" :class="{ active:activeIndex===i+1 }" @mouseenter="index=i+1"></span>
+    </div>
+</div>
 </template>
 
 <script>
-    export default {
-        name:'slide',
-        props:{
-            imgs:{
-                type: Array,
-                required: true,
-            },
-            slideWidth:{
-                type: String,
-                default: 'inherit',
-            },
-            ms:{
-                type: Number,
-                default: 2500,
-            },
+import { animate } from 'yu-front';
+export default {
+    name:"slide",
+    props:{
+        imgs:{
+            type:Array,
+            required:true
         },
-        data() {
-            return {
-                left:0,
-                imgWidth:0,
-                bool:false,
-                timer:null,
-                offsetIndex:1,
-                transition:'none'
-            }
-        },
-        computed: {
-            slideImg: function() {
-                return [ this.imgs[this.imgs.length-1], ...this.imgs, this.imgs[0] ];
-            },
-            boxWidth: function() {
-                return this.imgWidth*this.slideImg.length;
-            }
-        },
-        methods:{
-            up(){
-                if(this.bool) return;
-                this.bool = true;
-                this.ani(200);
-                this.left += this.imgWidth;
-                this.getIndex();
-            },
-            down(){
-                if(this.bool) return;
-                this.bool = true;
-                this.ani(200);
-                this.left -= this.imgWidth;
-                this.getIndex();
-            },
-            getIndex(){
-                let i = Math.round(Math.abs(this.left/this.imgWidth));
-                this.offsetIndex = i==0? this.imgs.length : (i==this.slideImg.length-1 ? 1 : i);
-            },
-            over(i){
-                if(this.bool) return;
-                this.bool = true;
-                this.ani(200);
-                this.left = -this.imgWidth*i;
-                this.offsetIndex = i;
-            },
-            ani(duration=500){
-                this.transition = `all ${duration/1000}s`;
-                setTimeout(()=>{
-                    this.transition = '';
-                    this.left = this.left >= 0 ? -this.imgWidth*this.imgs.length : this.left;
-                    this.left = this.left <= -this.imgWidth*(this.slideImg.length-1) ? -this.imgWidth : this.left;
+        ms:{
+            type:Number,
+            default:2500
+        }
+    },
+    data(){
+        return {
+            box:null,
+            index:1,
+            activeIndex:1,
+            bool:false,
+            timer:null,
+        }
+    },
+    watch:{
+        index(n,o){
+            let max = this.nimgs.length-2;
+            let last = this.nimgs.length-1;
+            if((o===0 && n===max) || (o===last && n===1)) return;
+
+            let val = 100/this.nimgs.length;
+            if(n===0){
+                this.activeIndex = max;
+                animate(this.box,[{ transform:{ translateX:-val*n+'%' } },{duration:300}]).then(()=>{
+                    animate(this.box,[{ transform:{ translateX:-val*max+'%' } },{duration:0}]).then(()=>{
+                        this.index = max;
+                        this.bool = false;
+                    });
+                });
+            }else if(n===last){
+                this.activeIndex = 1;
+                animate(this.box,[{ transform:{ translateX:-val*n+'%' } },{duration:300}]).then(()=>{
+                    animate(this.box,[{ transform:{ translateX:-val*1+'%' } },{duration:0}]).then(()=>{
+                        this.index = 1;
+                        this.bool = false;
+                    });
+                });
+            }else{
+                this.activeIndex = n;
+                animate(this.box,[{ transform:{ translateX:-val*n+'%' } },{duration:300}]).then(()=>{
                     this.bool = false;
-                },duration);
-            },
-            runTimer(){
-                this.timer = setInterval(()=>{
-                    this.ani();
-                    this.left -= this.imgWidth;
-                    this.getIndex();
-                },this.ms);
-            },
-            stopTimer(){
-                clearInterval(this.timer);
+                });
             }
+        }
+    },
+    methods:{
+        up(){
+            if(this.bool) return;
+            this.bool = true;
+            this.index--;
         },
-        mounted(){
-            this.imgWidth = this.$el.offsetWidth;
-            this.left = -this.imgWidth;
-            this.runTimer();
+        next(){
+            if(this.bool) return;
+            this.bool = true;
+            this.index++;
+        },
+        run(){
+            this.timer = setInterval(()=>{
+                this.index++;
+            },this.ms);
+        },
+        close(){
+            clearInterval(this.timer);
         }
-    }
-</script>
-
-<style lang='less' scoped>
-.slide{
-    position:relative;
-    margin:4px 2px;
-    border-radius: 5px;
-    box-shadow: 0 0 2px #000, 1px 1px 2px #000;
-    box-sizing: border-box;
-    overflow-x: hidden;
-
-    &:hover>.btn-group>span{
-        background:rgba(0,0,0,.2);
-        color:rgba(255,255,255,1);
-    }
-
-    .img-box{
-        box-sizing: border-box;
-        float:left;
-    }
-    .btn-group{
-        width:100%;
-        position: absolute;
-        top:50%;
-        transform: translateY(-50%);
-        span{
-            padding:10px;
-            color:rgba(255,255,255,0);
-            
+    },
+    computed:{
+        nimgs(){
+            return [this.imgs[this.imgs.length-1], ...this.imgs, this.imgs[0]];
         }
-        span:first-child{
-            float:left;
-            border-radius:0 15px 15px 0;
-        }
-        span:last-child{
-            float:right;
-            border-radius:15px 0 0 15px;
-        }
-    }
-    .dot{
-        position: absolute;
-        left:50%;
-        bottom:0;
-        
-        transform: translateX(-50%);
-        li{
-            float:left;
-            
-            p{
-                // box-shadow: 0 0 1px #000;
-                border:1px solid #CCC;
-                background: #fff;
-                border-radius: 50%;
-                padding:1px;
-                background-clip: content-box;
-            }
-        }
-        
-        .active>p{
-            background-color:rgb(168, 2, 2);
-            
-        }
+    },
+    mounted(){
+        this.box = this.$refs.box;
+        animate(this.box,[{ transform:{ translateX:-100/this.nimgs.length*this.index+'%' } },{duration:0}]);
+        this.run();
     }
 }
+</script>
 
+<style lang="less" scoped>
+.slide{
+    position:relative;
+    overflow: hidden;
+
+    &:hover>.up-next{
+        opacity: 1;
+    }
+}
+.box{
+    display:flex;
+    >*{
+        flex:1;
+    }
+}
+.up-next{
+    opacity: 0;
+    position:absolute;
+    top:50%;
+    left:0;
+    width:100%;
+    transform:translateY(-50%);
+    >*{
+        background: rgba(0,0,0,.3);
+        padding:10px;
+        color:#FFF;
+    }
+    .up{
+        float:left;
+    }
+    .next{
+        float:right;
+    }
+    &:after{
+        content:"";
+        height:0;
+        clear:both;
+    }
+}
+.dot{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    >*{
+        display:inline-block;
+        width:10px;
+        height:10px;
+        padding:1px;
+        background: #FFF;
+        border:1px solid #999;
+        border-radius: 50%;
+    }
+    >*:not(:last-child){
+        margin-right:10px;
+    }
+    .active{
+        background: rgba(182,0,0,.8);
+        background-clip: content-box;
+    }
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div class="shapeY">
+<div class="shapeY" @mouseenter="close" @mouseleave="run">
     <div ref="box" class="box" :style="{ transformOrigin: `50% 50% -${height/2}px` }">
         <div class="img" v-for="val,i in 4" :key="val" :style="getStyle(i)">
             <img v-if="(index-1)%4===i" :src="nimgs[index-1]" alt="" width="100%" height="auto">
@@ -30,6 +30,10 @@ export default {
         imgs:{
             type:Array,
             required:true
+        },
+        ms:{
+            type:Number,
+            default:2500
         }
     },
     watch:{
@@ -68,9 +72,10 @@ export default {
         return {
             bool:false,
             box:null,
-            index:0,
+            index:1,
             activeIndex:1,
-            height:0
+            height:0,
+            timer:null,
         }
     },
     methods:{
@@ -95,6 +100,14 @@ export default {
             if(this.bool) return;
             this.bool = true;
             this.index++;
+        },
+        run(){
+            this.timer = setInterval(()=>{
+                this.index++;
+            },this.ms);
+        },
+        close(){
+            clearInterval(this.timer);
         }
     },
     computed:{
@@ -104,9 +117,8 @@ export default {
     },
     mounted(){
         this.box = this.$refs.box;
-        animate(this.box,[{ transform:{ rotateX:(this.nimgs.length-1)*90 } },{ duration:0 }]).then(()=>{
-            this.index = this.nimgs.length-1;
-        });
+        animate(this.box,[{ transform:{ rotateX:1*90 } }]);
+        this.run();
     }
 }
 </script>
