@@ -1,10 +1,9 @@
 <template>
 <div class="fold" @click="click">
-    <h3>{{value}}</h3>
-
-    <ul ref="content" class="content" @click.stop>
+    <h3>{{title}}</h3>
+    <div ref="content" class="content" @click.stop>
         <slot></slot>
-    </ul>
+    </div>
 </div>
 </template>
 
@@ -13,66 +12,58 @@ import { animate } from 'yu-front';
 export default {
     name:"fold",
     props:{
-        value:{
+        title:{
             type:String,
             default:'一级菜单'
         },
-        active:{
+        open:{
             type:Boolean,
-            default:false
+            default:true
         }
     },
     data(){
         return {
             show:true,
-            ul:null,
-            height:0
-        }
-    },
-    methods:{
-        click(){
-            if(this.active) return;
-            this.show = !this.show;
+            ele:null,
+            height:0,
         }
     },
     watch:{
         show(n,o){
             if(n){
-                this.ul.style.display = 'block';
-                animate(this.ul,[{ height:this.height },{ duration:200 }]);
+                animate(this.ele,[{ height:this.height },{duration:300}]);
             }else{
-                animate(this.ul,[{ height:0 },{ duration:200 }]).then(()=>{
-                    this.ul.style.display = 'none';
-                });
+                animate(this.ele,[{ height:0 },{duration:300}]);
             }
         }
     },
+    methods:{
+        click(){
+            if(!this.open) return;
+            this.show = !this.show;
+        }
+    },
     mounted(){
-        this.ul = this.$refs.content;
-        this.height = this.ul.offsetHeight;
+        this.ele = this.$refs.content;
+        this.height = this.ele.offsetHeight;
     }
 }
 </script>
 
 <style lang="less" scoped>
 .fold{
-    overflow: hidden;
-    margin:4px 2px;
-    border-radius: 5px;
-    box-shadow: 0 0  2px #000,1px 1px 2px #000;
-
-    >h3{
-        padding:5px 20px;
-        background:rgb(28, 112, 155);
+    border:1px solid #EEE;
+    h3{
+        padding:8px 20px;
+        background: rgb(28, 112, 155);
         color:#FFF;
     }
-    >.content{
-        overflow-y: hidden;
+    .content{
+        padding:0 20px;
+        transform-origin: center top;
+        overflow: hidden;
         >*{
-            padding:5px 10px;
-        }
-        >*:hover{
-            background: #abc;
+            padding:8px 0;
         }
     }
 }

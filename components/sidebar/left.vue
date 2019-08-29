@@ -1,18 +1,10 @@
 <template>
-<div 
-    class="left" 
-    @touchstart="start"
-    @touchend="end"
-    :style="{ width:width,transform:tranX,display:show ? 'block':'none' }"
->
-    <slot></slot>
-</div>
-
+    <div class="left" @touchstart="start" @touchend="end" :style="{ width:size,transform:`translateX(${left}px)` }">
+        <slot></slot>
+    </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import { getType } from 'yu-util';
 import { animate } from 'yu-front';
 export default {
     props:{
@@ -28,79 +20,77 @@ export default {
     data(){
         return {
             left:0,
-            show:this.value
+            x:0,
+            width:0,
+            speeds:[],
         }
     },
     watch:{
-        value(nVal){
-            if(nVal){
-                this.show = true;
-                Vue.nextTick(()=>{
-                    animate(this.$el,[{ transform:{ translateX:0 } },{duration:300}]).then(()=>{
-                        this.left = 0;
-                    });
-                });
-                return;
-            }
-            animate(this.$el,[{ transform:{ translateX:'-100%' } },{duration:300}]).then(()=>{
-                this.left = '-100%';
-                this.show = false;
-            })
-        }
-    },
-    computed:{
-        width(){
-            if(getType(this.size)==='String' && this.size.includes('%')){
-                return this.size;
-            }else{
-                return this.size+'px';
-            }
+        value(n,o){
+            this.ani(n);
         },
-        tranX(){
-            let type = getType(this.left);
-            if( !(type==='String'||type==='Number') ) return `translateX(0)`;
-            let left = type==='String' && type.includes('%') ? this.left : this.left+'px';
-            return `translateX(${left})`;
+        left(n,o){
+            n>0 && (this.left = 0);
         }
     },
     methods:{
-        start(e){
-            this.left = 0;
-            let el = this.$el;
-            let x = e.changedTouches[0].clientX;
-            el.ontouchmove = (event)=>{
-                let mx = event.changedTouches[0].clientX;
-                this.left += mx-x;
-                this.left = this.left>0 ? 0 : this.left;
-                x = mx;
-            }
-        },
-        end(e){
-            let el = this.$el;
-            el.ontouchmove = null;
-            let width = el.offsetWidth;
-            if(-this.left>width/3){
-                this.$emit('input',false);
+        ani(bool){
+            if(bool){
+                animate(this.$el,[{ transform:{ translateX:0 } },{ duration:300 }]).then(()=>{
+                    this.left = 0;
+                });
             }else{
-                this.show = true;
-                Vue.nextTick(()=>{
-                    animate(this.$el,[{ transform:{ translateX:0 } },{duration:300}]).then(()=>{
-                        this.left = 0;
-                    });
+                animate(this.$el,[{ transform:{ translateX:-this.width } },{ duration:300 }]).then(()=>{
+                    this.left = -this.width;
                 });
             }
+        },
+        move(e){
+            let x = e.changedTouches[0].clientX;
+            let val = x-this.x;
+            this.left += val
+            if( this.speeds.length>0 && ((this.speeds[0]>0 && val<0) || (this.speeds[0]<0 && val>0)) ){
+                this.speeds.splice(0);
+            }
+            this.speeds.push(val);
+            this.x = x;
+        },
+        start(e){
+            this.$el.style.transition = "";
+            this.x = e.changedTouches[0].clientX;
+            document.body.addEventListener('touchmove',this.move);
+        },
+        end(e){
+            document.body.removeEventListener('touchmove',this.move);
+            if(this.left<-this.width*0.2){
+                if(!this.value){
+                    this.ani(false);
+                }else{
+                    this.$emit('input',false);
+                }
+                
+            }else{
+                
+                if(this.value){
+                    this.ani(true);
+                }else{
+                    this.$emit('input',true);
+                }
+            }
+            
         }
+    },
+    mounted(){
+        this.width = this.$el.offsetWidth;
     }
 }
 </script>
 
 <style lang="less" scoped>
 .left{
-    position:fixed;
+    position:absolute;
     left:0;
-    width:100%;
     height:100%;
     background: #abc;
-    z-index:9;
 }
 </style>

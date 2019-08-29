@@ -1,18 +1,10 @@
 <template>
-<div 
-    class="top" 
-    @touchstart="start"
-    @touchend="end"
-    :style="{ height:height,transform:tranY,display:show ? 'block':'none' }"
->
-    <slot></slot>
-</div>
-
+    <div class="top" @touchstart="start" @touchend="end" :style="{ height:size,transform:`translateY(${top}px)` }">
+        <slot></slot>
+    </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import { getType } from 'yu-util';
 import { animate } from 'yu-front';
 export default {
     props:{
@@ -28,78 +20,76 @@ export default {
     data(){
         return {
             top:0,
-            show:this.value
+            y:0,
+            height:0,
+            speeds:[],
         }
     },
     watch:{
-        value(nVal){
-            if(nVal){
-                this.show = true;
-                Vue.nextTick(()=>{
-                    animate(this.$el,[{ transform:{ translateY:0 } },{duration:300}]).then(()=>{
-                        this.top = 0;
-                    });
-                });
-                return;
-            }
-            animate(this.$el,[{ transform:{ translateY:'-100%' } },{duration:300}]).then(()=>{
-                this.top = '-100%';
-                this.show = false;
-            })
-        }
-    },
-    computed:{
-        height(){
-            if(getType(this.size)==='String' && this.size.includes('%')){
-                return this.size;
-            }else{
-                return this.size+'px';
-            }
+        value(n,o){
+            this.ani(n);
         },
-        tranY(){
-            let type = getType(this.top);
-            if( !(type==='String'||type==='Number') ) return `translateY(0)`;
-            let top = type==='String' && type.includes('%') ? this.top : this.top+'px';
-            return `translateY(${top})`;
+        top(n,o){
+            n>0 && (this.top = 0);
         }
     },
     methods:{
-        start(e){
-            this.top = 0;
-            let el = this.$el;
-            let y = e.changedTouches[0].clientY;
-            el.ontouchmove = (event)=>{
-                let my = event.changedTouches[0].clientY;
-                this.top += my-y;
-                this.top = this.top>0 ? 0 : this.top;
-                y = my;
-            }
-        },
-        end(e){
-            let el = this.$el;
-            el.ontouchmove = null;
-            let height = el.offsetHeight;
-            if(-this.top>height/3){
-                this.$emit('input',false);
+        ani(bool){
+            if(bool){
+                animate(this.$el,[{ transform:{ translateY:0 } },{ duration:300 }]).then(()=>{
+                    this.top = 0;
+                });
             }else{
-                this.show = true;
-                Vue.nextTick(()=>{
-                    animate(this.$el,[{ transform:{ translateY:0 } },{duration:300}]).then(()=>{
-                        this.top = 0;
-                    });
+                animate(this.$el,[{ transform:{ translateY:-this.height } },{ duration:300 }]).then(()=>{
+                    this.top = -this.height;
                 });
             }
+        },
+        move(e){
+            let y = e.changedTouches[0].clientY;
+            let val = y-this.y;
+            this.top += val
+            if( this.speeds.length>0 && ((this.speeds[0]>0 && val<0) || (this.speeds[0]<0 && val>0)) ){
+                this.speeds.splice(0);
+            }
+            this.speeds.push(val);
+            this.y = y;
+        },
+        start(e){
+            this.$el.style.transition = "";
+            this.y = e.changedTouches[0].clientY;
+            document.body.addEventListener('touchmove',this.move);
+        },
+        end(e){
+            document.body.removeEventListener('touchmove',this.move);
+            if(this.top<-this.height*0.2){
+                if(!this.value){
+                    this.ani(false);
+                }else{
+                    this.$emit('input',false);
+                }
+                
+            }else{
+                
+                if(this.value){
+                    this.ani(true);
+                }else{
+                    this.$emit('input',true);
+                }
+            }
+            
         }
+    },
+    mounted(){
+        this.height = this.$el.offsetHeight;
     }
 }
 </script>
 
 <style lang="less" scoped>
 .top{
-    position:fixed;
+    position:absolute;
     top:0;
     width:100%;
-    background: #abc;
-    z-index:9;
 }
 </style>
