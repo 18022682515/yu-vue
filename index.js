@@ -1,83 +1,45 @@
 
-const obj = {};
-obj.names = [
-    'falls', 
-    'myTransition', 
-    'numList', 
-    'select',
-    'scale',
-    'fold',
-    'pageCode',
-    'table',
-    'viewBox',
-    'scroll',
-    'hint',
-    'nav',
-    'img',
-    'icon/load',
-    'icon/arrowsUp',
-    'icon/arrowsDown',
-    'layout/touchX',
-    'layout/touchY',
-    'layout/screenY',
-    'layout/pull',
-    'user/signin',
-    'user/login',
-    'calendar/calendar',
-    'calendar/slideCalendar',
-    'svg/svg',
-    'svg/path',
-    'progress/progress',
-    'progress/circle',
-    'alert/alert',
-    'alert/confirm',
-    'slide/slide',
-    'slide/slideX',
-    'slide/slideY',
-    'slide/slideOpacity',
-    'slide/shapeX',
-    'slide/shapeY',
-    'sidebar/top',
-    'sidebar/right',
-    'sidebar/bottom',
-    'sidebar/left',
-    'input/button',
-    'input/input',
-    'input/radio',
-    'input/checkbox',
-    'tabs/tab',
-    'tabs/tabs',
-    'tabs/tabsItem',
-    'tabs/textTabs',
-];
+import './index.css';
+import createScript from './lib/createScript.js';
+import imageLazyLoad from './lib/imageLazyLoad.js'
+import yuTransition from './components/layout/transition.vue'
+import yuCache from './components/layout/cache.vue'
 
 
-function setComponent(Vue, names){
-    names.forEach( name=>{
-        let arr = name.split('/');
-        let filename = arr[arr.length-1];
-        let component = 'yu'+filename.replace(filename[0],filename[0].toLocaleUpperCase());
-        Vue.component( component, resolve=>{
-            require(['./components/'+name+'.vue'], resolve);
-        } );
-    } );
+class Plugin{
+	constructor(url) {
+		this.url = url;
+		this.componentNames = [
+			'icon/icon',
+			'layout/view',
+			'layout/shade',
+			'form/button',
+			'form/input',
+			'form/radio',
+			'form/checkbox',
+			'slide/slide'
+		];
+	}
+	
+	install(Vue,options){
+		this.createScript(this.url);
+		this.imageLazyLoad(Vue,options);
+		this.setComponent(Vue);
+	}
 }
 
-obj.install = function(Vue, options){
-    setComponent(Vue, obj.names);
-    //Vue.mount('css选择器','组件名'|组件对象,props对象);
-    Vue.mount = function(selector,component,props) {
-        
-        let vm = new Vue({
-            el:selector,
-            render:h=>h(component,{ props })
-        });
-        let resArr = selector.match(/^(\.|\#)|\w+/g);
-        resArr[0] === '#' && (vm.$el.id = resArr[1]);
-        resArr[0] === '.' && (vm.$el.className += ' '+resArr[1]);
-
-        return vm;
-    };
+Plugin.prototype.setComponent = function(Vue){
+	Vue.component('yuTransition',yuTransition);
+	Vue.component('yuCache',yuCache);
+	this.componentNames.forEach( name=>{
+		let arr = name.split('/');
+		let filename = arr[arr.length-1];
+		let component = 'yu'+filename.replace(filename[0],filename[0].toLocaleUpperCase());
+		Vue.component(component,resolve => require(['./components/'+name+'.vue'], resolve));
+	});
 }
 
-export default obj;
+Plugin.prototype.imageLazyLoad = imageLazyLoad;
+Plugin.prototype.createScript = createScript;
+
+export default Plugin;
